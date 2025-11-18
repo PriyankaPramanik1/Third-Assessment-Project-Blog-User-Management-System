@@ -1,0 +1,77 @@
+<%- include('partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Dashboard</h2>
+    <a href="/blogs/create" class="btn btn-primary">Create New Blog</a>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">My Blogs</h5>
+            </div>
+            <div class="card-body">
+                <% if (blogs && blogs.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% blogs.forEach(blog => { %>
+                                    <tr>
+                                        <td>
+                                            <a href="/blogs/<%= blog._id %>" class="text-decoration-none">
+                                                <%= blog.title %>
+                                            </a>
+                                        </td>
+                                        <td><%= new Date(blog.createdAt).toLocaleDateString() %></td>
+                                        <td>
+                                            <a href="/blogs/edit/<%= blog._id %>" class="btn btn-sm btn-warning">Edit</a>
+                                            <button onclick="deleteBlog('<%= blog._id %>')" class="btn btn-sm btn-danger">Delete</button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p class="text-muted">You haven't created any blogs yet.</p>
+                    <a href="/blogs/create" class="btn btn-primary">Create Your First Blog</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteBlog(blogId) {
+    if (confirm('Are you sure you want to delete this blog?')) {
+        fetch(`/api/blogs/${blogId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting blog');
+        });
+    }
+}
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Create New Blog</h4>
+            </div>
+            <div class="card-body">
+                <form action="/api/blogs" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required maxlength="200">
+                        <div class="form-text">Maximum 200 characters</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="blogImage" class="form-label">Blog Image (Optional)</label>
+                        <input type="file" class="form-control" id="blogImage" name="blogImage" accept="image/*">
+                        <div class="form-text">Supported formats: JPG, PNG, GIF. Max size: 5MB</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content</label>
+                        <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Create Blog</button>
+                        <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

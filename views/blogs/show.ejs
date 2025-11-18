@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <article>
+            <% if (blog.image) { %>
+                <img src="<%= blog.image %>" class="img-fluid rounded mb-4" alt="<%= blog.title %>">
+            <% } %>
+            
+            <h1 class="mb-3"><%= blog.title %></h1>
+            
+            <div class="d-flex align-items-center mb-4 text-muted">
+                <img src="<%= blog.author.profileImage || '/images/default-avatar.png' %>" 
+                     alt="<%= blog.author.name %>" 
+                     class="rounded-circle me-2" 
+                     width="40" 
+                     height="40">
+                <div>
+                    <strong><%= blog.author.name %></strong>
+                    <div class="small">
+                        <%= new Date(blog.createdAt).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="blog-content mb-4">
+                <%= blog.content.replace(/\n/g, '<br>') %>
+            </div>
+
+            <% if (currentUser && (currentUser.role === 'admin' || currentUser.id === blog.author._id.toString())) { %>
+                <div class="border-top pt-3 mt-4">
+                    <div class="btn-group">
+                        <a href="/blogs/edit/<%= blog._id %>" class="btn btn-warning">Edit</a>
+                        <button onclick="deleteBlog('<%= blog._id %>')" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            <% } %>
+        </article>
+    </div>
+</div>
+
+<script>
+function deleteBlog(blogId) {
+    if (confirm('Are you sure you want to delete this blog?')) {
+        fetch(`/api/blogs/${blogId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                window.location.href = '/blogs';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting blog');
+        });
+    }
+}
+</script>
+
+<%- include('../partials/footer') %>
